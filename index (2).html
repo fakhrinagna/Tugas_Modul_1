@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Azure Static Web App</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      font-family: 'Segoe UI', system-ui, sans-serif;
+      background: #0f172a;
+      color: #e2e8f0;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 2rem;
+      overflow-x: hidden;
+    }
+
+    .bg-glow {
+      position: fixed;
+      top: -200px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 700px;
+      height: 700px;
+      background: radial-gradient(circle, rgba(0, 120, 212, 0.15) 0%, transparent 70%);
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    .card {
+      position: relative;
+      z-index: 1;
+      background: #1e293b;
+      border: 1px solid #334155;
+      border-radius: 20px;
+      padding: 3rem 3.5rem;
+      max-width: 560px;
+      width: 100%;
+      text-align: center;
+      box-shadow: 0 25px 60px rgba(0,0,0,0.4);
+    }
+
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: rgba(0,120,212,0.15);
+      border: 1px solid rgba(0,120,212,0.35);
+      color: #60a5fa;
+      font-size: 12px;
+      font-weight: 600;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      padding: 5px 14px;
+      border-radius: 999px;
+      margin-bottom: 1.5rem;
+    }
+
+    .badge::before {
+      content: '';
+      width: 6px;
+      height: 6px;
+      background: #22c55e;
+      border-radius: 50%;
+      animation: pulse 1.8s infinite;
+    }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50% { opacity: 0.5; transform: scale(1.4); }
+    }
+
+    h1 {
+      font-size: 2.2rem;
+      font-weight: 700;
+      color: #f1f5f9;
+      margin-bottom: 0.5rem;
+      line-height: 1.2;
+    }
+
+    h1 span { color: #0078d4; }
+
+    .subtitle {
+      font-size: 1rem;
+      color: #94a3b8;
+      margin-bottom: 2rem;
+      line-height: 1.6;
+    }
+
+    .info-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+      margin-bottom: 2rem;
+    }
+
+    .info-box {
+      background: #0f172a;
+      border: 1px solid #334155;
+      border-radius: 12px;
+      padding: 1rem;
+      text-align: left;
+    }
+
+    .info-box .label {
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: #64748b;
+      margin-bottom: 4px;
+    }
+
+    .info-box .value {
+      font-size: 13px;
+      color: #e2e8f0;
+      font-weight: 500;
+    }
+
+    #clock {
+      font-size: 13px;
+      color: #60a5fa;
+      font-variant-numeric: tabular-nums;
+      font-weight: 600;
+    }
+
+    .status-row {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      background: rgba(34,197,94,0.08);
+      border: 1px solid rgba(34,197,94,0.2);
+      border-radius: 10px;
+      padding: 10px 16px;
+      margin-bottom: 2rem;
+      font-size: 13px;
+      color: #86efac;
+      font-weight: 500;
+    }
+
+    .dot-green {
+      width: 8px;
+      height: 8px;
+      background: #22c55e;
+      border-radius: 50%;
+      flex-shrink: 0;
+    }
+
+    .btn {
+      display: inline-block;
+      background: #0078d4;
+      color: #fff;
+      font-size: 14px;
+      font-weight: 600;
+      padding: 11px 28px;
+      border-radius: 10px;
+      border: none;
+      cursor: pointer;
+      transition: background 0.2s, transform 0.1s;
+    }
+
+    .btn:hover { background: #006cbe; }
+    .btn:active { transform: scale(0.97); }
+
+    .footer-note {
+      margin-top: 2.5rem;
+      font-size: 12px;
+      color: #475569;
+    }
+
+    .logo-area {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 1.8rem;
+    }
+
+    .azure-logo { width: 40px; height: 40px; }
+  </style>
+</head>
+<body>
+
+  <div class="bg-glow"></div>
+
+  <div class="card">
+
+    <div class="logo-area">
+      <svg class="azure-logo" viewBox="0 0 96 96" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <linearGradient id="g1" x1="33" y1="6" x2="19" y2="74" gradientUnits="userSpaceOnUse">
+            <stop stop-color="#114A8B"/>
+            <stop offset="1" stop-color="#0669BC"/>
+          </linearGradient>
+          <linearGradient id="g2" x1="52" y1="34" x2="46" y2="61" gradientUnits="userSpaceOnUse">
+            <stop stop-color="#000000" stop-opacity="0.3"/>
+            <stop offset="1" stop-color="#000000" stop-opacity="0"/>
+          </linearGradient>
+          <linearGradient id="g3" x1="44" y1="29" x2="72" y2="84" gradientUnits="userSpaceOnUse">
+            <stop stop-color="#3CCBF4"/>
+            <stop offset="1" stop-color="#2892DF"/>
+          </linearGradient>
+        </defs>
+        <path d="M33.34 6.63H58.3L32.13 83.26a4.28 4.28 0 01-4.05 2.9H9.41a4.28 4.28 0 01-4.04-5.68L29.29 9.53a4.28 4.28 0 014.05-2.9z" fill="url(#g1)"/>
+        <path d="M67.52 57.71H31.4l-1.17 3.39 20.27 18.86a5.76 5.76 0 003.9 1.52h17.17L67.52 57.71z" fill="url(#g2)" opacity="0.5"/>
+        <path d="M33.34 6.63a4.24 4.24 0 00-4.06 2.95L5.41 80.52a4.28 4.28 0 004.04 5.64H28.5a4.58 4.58 0 003.54-2.95l4.75-14H63.5l9.28 14.08a4.44 4.44 0 003.68 1.87h18.06L37.23 7.35a4.29 4.29 0 00-3.89-0.72z" fill="url(#g3)"/>
+      </svg>
+    </div>
+
+    <div class="badge">Microsoft Azure</div>
+
+    <h1>Azure <span>Web Test</span></h1>
+    <p class="subtitle">Website ini berhasil berjalan di Microsoft Azure Static Web Apps 🎉</p>
+
+    <div class="status-row">
+      <div class="dot-green"></div>
+      Deployment berhasil &amp; aktif
+    </div>
+
+    <div class="info-grid">
+      <div class="info-box">
+        <div class="label">Platform</div>
+        <div class="value">Azure Static Web Apps</div>
+      </div>
+      <div class="info-box">
+        <div class="label">Status</div>
+        <div class="value" style="color:#86efac;">Running</div>
+      </div>
+      <div class="info-box">
+        <div class="label">Region</div>
+        <div class="value">East Asia</div>
+      </div>
+      <div class="info-box">
+        <div class="label">Waktu Sekarang</div>
+        <div class="value"><span id="clock">--:--:--</span></div>
+      </div>
+    </div>
+
+    <button class="btn" onclick="handleClick()">Klik Saya</button>
+
+    <div class="footer-note">
+      Praktikum Cloud Computing &mdash; Komputasi Awan
+    </div>
+  </div>
+
+  <script>
+    function pad(n){ return String(n).padStart(2,'0'); }
+    function updateClock(){
+      const now = new Date();
+      document.getElementById('clock').textContent =
+        pad(now.getHours()) + ':' + pad(now.getMinutes()) + ':' + pad(now.getSeconds());
+    }
+    updateClock();
+    setInterval(updateClock, 1000);
+
+    function handleClick(){
+      const btn = document.querySelector('.btn');
+      btn.textContent = '✓ Azure is Alive!';
+      btn.style.background = '#16a34a';
+      setTimeout(() => {
+        btn.textContent = 'Klik Saya';
+        btn.style.background = '#0078d4';
+      }, 2000);
+    }
+  </script>
+
+</body>
+</html>
